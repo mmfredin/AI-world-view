@@ -1,0 +1,563 @@
+<title>AI Worldview v1.1 Draft</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #F6F8FB;
+    --fg:       #18283F;
+    --accent:   #1D5FA5;
+    --accent-lt:#E9F0F9;
+    --muted:    #8099B3;
+    --divider:  #CDD8E8;
+    --table-hd: #E3EAF4;
+    --new-border: 3px solid #1D5FA5;
+    --serif-display: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+    --serif-body:    Georgia, 'Times New Roman', serif;
+    --mono:          'Courier New', Courier, monospace;
+  }
+
+  html { background: var(--bg); color: var(--fg); font-size: 16px; }
+
+  body {
+    font-family: var(--serif-body);
+    line-height: 1.75;
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 56px 36px 80px;
+  }
+
+  /* ── Document header ── */
+  .doc-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  h1.doc-title {
+    font-family: var(--serif-display);
+    font-size: 34px;
+    font-weight: normal;
+    line-height: 1.2;
+    color: var(--fg);
+    text-wrap: balance;
+    margin-bottom: 6px;
+  }
+
+  .doc-subtitle {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .06em;
+    margin-bottom: 36px;
+  }
+
+  .changelog {
+    border: 1px solid var(--divider);
+    border-radius: 2px;
+    padding: 16px 20px;
+    margin-bottom: 48px;
+    background: #fff;
+  }
+  .changelog-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .changelog table { width: 100%; border-collapse: collapse; }
+  .changelog td {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 4px 12px 4px 0;
+    vertical-align: top;
+    color: var(--fg);
+  }
+  .changelog td:first-child { color: var(--muted); white-space: nowrap; }
+
+  /* ── Section headings ── */
+  h2 {
+    font-family: var(--serif-display);
+    font-size: 22px;
+    font-weight: normal;
+    color: var(--fg);
+    margin-top: 52px;
+    margin-bottom: 6px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--divider);
+    text-wrap: balance;
+  }
+
+  h3 {
+    font-family: var(--serif-display);
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--fg);
+    margin-top: 28px;
+    margin-bottom: 4px;
+    text-wrap: balance;
+  }
+
+  p { margin-bottom: 14px; }
+
+  /* ── Beliefs ── */
+  .belief {
+    margin-bottom: 20px;
+    padding-left: 0;
+  }
+  .belief p { margin-bottom: 0; }
+  .belief-lead {
+    font-weight: bold;
+    color: var(--fg);
+  }
+
+  /* ── Updated / New content markers ── */
+  .updated, .is-new {
+    border-left: var(--new-border);
+    padding-left: 16px;
+    margin-left: -19px;
+    background: var(--accent-lt);
+    border-radius: 0 2px 2px 0;
+    padding-top: 12px;
+    padding-right: 14px;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+
+  .version-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    border-radius: 2px;
+    padding: 1px 6px;
+    margin-bottom: 8px;
+    vertical-align: middle;
+  }
+
+  .is-new .version-badge::before { content: "NEW — "; }
+  .updated .version-badge::before { content: "UPDATED — "; }
+
+  /* ── Callout boxes ── */
+  .callout {
+    background: #fff;
+    border: 1px solid var(--divider);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    margin: 20px 0;
+    border-radius: 0 2px 2px 0;
+  }
+  .callout-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .callout p { margin-bottom: 6px; font-size: 15px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ── Tables ── */
+  .table-wrap { overflow-x: auto; margin: 24px 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+  th {
+    background: var(--table-hd);
+    font-family: var(--serif-display);
+    font-weight: bold;
+    font-size: 13px;
+    text-align: left;
+    padding: 9px 12px;
+    border: 1px solid var(--divider);
+  }
+  td {
+    padding: 8px 12px;
+    border: 1px solid var(--divider);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  tr:nth-child(even) td { background: #fafbfd; }
+  td.new-row { background: var(--accent-lt); }
+
+  /* ── Phase headings ── */
+  .phase-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2px;
+    margin-top: 40px;
+  }
+
+  /* ── Open questions ── */
+  .question { margin-bottom: 18px; }
+  .question-lead { font-weight: bold; }
+
+  /* ── Footer ── */
+  .doc-footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px solid var(--divider);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: .05em;
+  }
+
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 6px; }
+
+  strong { font-weight: bold; }
+  em { font-style: italic; }
+</style>
+
+<div class="doc-eyebrow">AI Worldview</div>
+<h1 class="doc-title">State of AI, Strategy, and Implementation</h1>
+<div class="doc-subtitle">Strong opinions loosely held.</div>
+
+<div class="changelog">
+  <div class="changelog-title">Changelog</div>
+  <table>
+    <tr><td>1.0</td><td>4/27/26</td><td>Initial version</td></tr>
+    <tr><td>1.1</td><td>6/30/26</td><td>Added Software 3.0 paradigm and Agentic Engineering framework (Karpathy, Sequoia AI Ascent 2026); updated beliefs #9 and #4; added Capability Overhang concept and interface gap analysis (Mollick, One Useful Thing, 6/30/26); updated strategic implications and Phase 2 guidance; expanded Key Debates table.</td></tr>
+  </table>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2>State of AI</h2>
+<!-- ═══════════════════════════════════════════════ -->
+
+<p>Strong opinions loosely held. Here's a list of beliefs about the state of AI:</p>
+
+<div class="belief">
+  <p><span class="belief-lead">Systems that scale with compute beat those that don't.</span> This is the bitter lesson of 70 years of AI research. Methods that leverage raw computation — search, learning, scale — consistently defeat methods that try to encode human knowledge directly. The implication for adopters: don't bet on hand-built rules and narrow automation. Bet on general-purpose models that get better as compute gets cheaper.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">Compute will continue to get cheaper.</span> Moore's law, or its generalization, has held for decades and shows no sign of stopping. What is expensive and scarce today becomes abundant tomorrow. Strategies that assume current cost structures are permanent will be wrong.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">Context — proprietary insight about the world — defines the winners in the age of AI.</span> Foundation models are commoditizing. The scarce resource is not intelligence but the domain-specific knowledge that makes intelligence useful: your customer relationships, your institutional memory, your understanding of your market. The firms that can translate that knowledge into high-quality AI context will outperform those with more powerful models but thinner context.</p>
+</div>
+
+<div class="belief updated">
+  <span class="version-badge">v1.1</span>
+  <p><span class="belief-lead">Context engineering is an essential capability — and the context window is now the primary competitive programming surface.</span> Context engineering is the work of selecting, structuring, and continuously updating the information that reaches an AI model when it performs a task. It is not prompt engineering. It requires deep domain expertise and ongoing human judgment. It is the bridge between what your organization knows and what AI can do with that knowledge.</p>
+  <p>A sharper framing, drawn from Karpathy's Software 3.0 thesis: in the current paradigm, <em>the context window is RAM and the model weights are the CPU</em>. What you put into context — institutional knowledge, precise specifications, high-quality examples, domain constraints — is the program. This makes context engineering not just a workflow skill but a systems architecture discipline. Generic context produces generic results; carefully engineered context produces proprietary capability. The bank that builds the deepest world model of its customers and loads it intelligently into AI context at the right moment has a structural advantage that no model improvement can erase.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">The future workforce is a hybrid of humans and agents.</span> This is not a future state to plan for — it is already underway. The question is not whether agents enter the workforce but how the division of labor between humans and agents is designed, managed, and evolved.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">Humans will concentrate in the work they are best suited for: accountability, systems design, relationships, and validation.</span> Someone must own outcomes before regulators and boards. Someone must architect how humans and agents collaborate. Someone must build and maintain trust between organizations. Someone must judge whether the system's output is actually good. These functions remain human. Most everything else is migrating.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">Systems thinking is the essential skill for individuals who will thrive.</span> The ability to see how pieces fit together, design workflows, and architect human-agent collaboration requires both technical fluency and deep understanding of how the business actually works. It is the hardest skill to develop and the most valuable to possess.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">AI agents need to be told what to do and what good looks like — not how to do it.</span> This is a fundamental shift from how banks have historically managed technology and people. Detailed procedural instructions give way to clear objectives, quality standards, and guardrails. The skill is in defining the outcome and the boundaries, not in specifying the steps.</p>
+</div>
+
+<div class="belief updated">
+  <span class="version-badge">v1.1</span>
+  <p><span class="belief-lead">Managing the work of agents and operating alongside them is a new and essential capability — and it has a name: Agentic Engineering.</span> This is not a metaphor. It means designing approval workflows, monitoring agent output, interpreting what agents surface, knowing when to intervene, and building the feedback loops that make the system improve over time. It is a discipline that barely exists today and will be table stakes within a few years.</p>
+  <p>The most practical framework for this discipline is the <strong>manager stance</strong>: the human's job shifts from doing each step to specifying goals, reviewing outputs, and correcting the final result. The cognitive load shifts from execution to evaluation. Domain expertise becomes more valuable, not less — it is the resource that makes validation meaningful. And validation doesn't get cheaper as models improve; it is bounded by what the human actually knows.</p>
+  <p>Agentic Engineering — as distinct from the looser "vibe coding" of early 2025 — involves specific practices: <strong>spec design</strong> (writing detailed specifications before prompting, including invariants, security boundaries, and edge cases), <strong>evaluation loop design</strong> (writing tests and evals so agents can self-check and iterate), <strong>diff inspection</strong> (critically reading every change an agent makes rather than rubber-stamping output), and <strong>permission management</strong> (controlling what agents can access, limiting blast radius). The people who do this well can achieve productivity multiples far beyond the traditional "10x engineer" — not because agents are perfectly reliable, but because the human's judgment about where to delegate, what to verify, and what to rewrite is the scarce input.</p>
+</div>
+
+<div class="belief is-new">
+  <span class="version-badge">v1.1</span>
+  <p><span class="belief-lead">The interface is the variable — and the shift from chatbots to agents is a capability unlock, not a model improvement.</span> AI capability has been running ahead of AI accessibility. The models have been smart enough to do extraordinary things for some time; the bottleneck has been the chatbot interface itself. Chatbots are synchronous, turn-by-turn, session-bounded, and tool-free. They impose cognitive costs that scale with task complexity and constrain time horizons to what a human can sustain in a single sitting. This is an interface failure, not a model failure — and it has systematically caused organizations to underestimate available capability.</p>
+  <p>Agents directly address each of these constraints: they work asynchronously, maintain persistent state, access tools, inspect their own failures, and loop until tasks complete. A model that can work for hours, run tests, read screenshots, and keep moving is a categorically different instrument than a chatbot accessing the same underlying intelligence. The implication: ROI analyses conducted in chatbot contexts are not predictive of agentic outcomes. Every interface shift will appear to be a capability leap — because in terms of accessible utility, it is.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">Validation demand will follow a bell curve — and we're still on the upslope.</span> Agents can do meaningful work but can't yet be trusted to operate autonomously in most domains. Humans review, correct, and sign off. This demand will peak in 2–4 years, then decline as systems accumulate enough data to self-correct. But new domains keep opening, pushing the curve rightward. Validation is not a temporary inconvenience — it is a structural feature of the transition.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">The validator pool is a one-generation asset.</span> If agents handle all the junior work, the next generation may never build the expertise needed to validate what AI produces. The gap between current experts retiring and new experts emerging is a real institutional risk. Entry-level work must be restructured around context engineering — learning to judge AI output, identify where context is missing, and iterate on the systems that produce it. Banks that don't solve this will find themselves dependent on a shrinking pool of domain experts.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">AI-native challengers have a structural advantage over incumbents.</span> They design the human-agent division of labor from scratch, with no legacy systems to rewire, no existing workforce to retrain, no entrenched processes to unwind. Incumbents' advantages — customer depth, regulatory standing, domain expertise — are real, but only if they can be converted into AI context and organizational speed. Otherwise they are just inertia.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">The pace of change in AI is exceptionally fast, and we have not reached a steady state.</span> Model capabilities are improving on a curve that makes 12-month predictions unreliable. Strategies must be designed to adapt continuously. Static plans — three-year roadmaps, fixed vendor commitments, rigid governance frameworks — will not survive contact with the rate of change. The organizational muscle to learn, build, deprecate, and rebuild is more important than any single deployment.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">Proficiency — individual and organizational — is gained through experience, not training.</span> You cannot train your way to AI competence through workshops and certifications. People learn by doing: by using AI daily, by building something that solves a real problem, by failing and iterating. Organizations learn the same way. The companies seeing compounding returns are the ones that fund the reps — giving people room to experiment with the explicit understanding that the payoff comes from compounding, not from day one.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">Speed is a compounding advantage.</span> Faster iteration produces more data, better context, sharper workflows, which produce faster iteration. The gap between fast movers and slow movers widens nonlinearly. This is not about being first — it is about building the cycle that compounds. Every quarter of delay is not just lost time; it is lost compounding.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">There is no one-model-fits-all answer.</span> Different models have different strengths — reasoning depth, speed, cost, multimodal capability, context window size. The right model depends on the task. Organizations need the flexibility to choose and switch models as the landscape evolves, which means avoiding deep lock-in to any single provider.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2>Strategic Implications</h2>
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="belief">
+  <p><span class="belief-lead">"AI strategy" is a misnomer.</span> Business strategy remains paramount — but must be reevaluated given what AI makes possible. AI is not a workstream alongside the business strategy. It reshapes what's feasible, what's economical, and what customers will expect. The strategic question isn't "what is our AI strategy?" It's "what does our business strategy look like now that intelligence is abundant and cheap?"</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">AI may change not just how you work, but where you play and how you win.</span> New products become feasible. New markets become reachable. New competitors emerge from outside the industry. Managing change across multiple axes simultaneously — operations, products, competitive positioning, talent — is the defining challenge of leadership right now.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">AI reduces the cost of operating, but if headcount doesn't flex, ROI comes only through growth.</span> This is the quiet tension in every AI business case. Banks that are unwilling or unable to resize teams will only realize returns by serving more customers, entering new markets, or offering new products with the same people. That's a viable path — but it requires a growth strategy, not just an efficiency one. Leaders should be honest with themselves about which path they're on.</p>
+</div>
+
+<div class="belief updated">
+  <span class="version-badge">v1.1</span>
+  <p><span class="belief-lead">AI capabilities are improving on a steep curve, but economic usefulness has lagged — and the interface is a larger part of the explanation than previously understood.</span> Dwarkesh Patel captured the lag: "Models keep getting more impressive at the rate short-timelines people predict, but more useful at the rate long-timelines people predict." This is substantiated by Goldman Sachs walking back their 7% GDP forecast to "no meaningful economy-wide effect yet" (2026), by Acemoglu's sub-1% TFP estimates, and by Anthropic's own Economic Index showing the gap between theoretical AI exposure (80%+ in knowledge work) and actual adoption.</p>
+  <p>A new and important explanation for this gap: <strong>it is significantly interface-mediated.</strong> Mollick's capability overhang argument holds that models have been capable of far more than chatbot interfaces allowed most users to access. The cognitive costs, synchronous constraints, and tool-free nature of chatbots suppressed observed utility independent of model quality. As agent interfaces diffuse — asynchronous, tool-rich, long-horizon — the capability overhang will compress. This means the expected lag between capability arrival and economic impact may be shorter than structural adoption models suggest, and it may compress faster than organizations are planning for. The implication: studies of AI productivity impact conducted in the chatbot era are systematically conservative about the agentic era.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">The "jagged frontier" is the most important practical concept for anyone deploying AI.</span> Documented by Mollick (Wharton/BCG study of 758 consultants), confirmed by Brynjolfsson's customer support study, and visible in every enterprise deployment report — AI is brilliant at some complex tasks and terrible at seemingly simple ones, and you cannot predict which without hands-on use. Karpathy's formulation — "jagged intelligence" — extends this: models spike dramatically in domains with dense training signal (code with tests, mathematics, games with scores) and fail unexpectedly elsewhere, with no reliable correlation to human intuitions about difficulty. Implication: top-down AI strategy without bottom-up experimentation is blind. Your member banks need structured experimentation programs.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">AI's labor impact is showing up as a hiring slowdown, not mass layoffs.</span> Anthropic's Economic Index found a 14% slowdown in hiring of 22–25 year-olds into AI-exposed roles. Brynjolfsson's work shows AI primarily lifts the performance floor (novices benefit most). Multiple sources (McKinsey, Accenture, Microsoft) converge on the same pattern: augmentation before automation. Implication: the story to tell your boards is about making existing relationship bankers 2–3x more effective, not about headcount reduction.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">Pre-training scaling may be plateauing, but at a level that is already transformatively powerful.</span> Dario Amodei (Dwarkesh interview, Feb 2026), Ilya Sutskever (Dwarkesh interview, Nov 2025), and Sequoia (2026 piece) all converge here. The exponential gains from simply adding compute are flattening, but RL-based and agentic approaches open a new capability frontier. Implication: don't wait for "the next GPT" — current capabilities are already sufficient to transform banking operations.</p>
+</div>
+
+<div class="belief updated">
+  <span class="version-badge">v1.1</span>
+  <p><span class="belief-lead">Agentic AI is the 2025-2026 inflection point — with December 2025 as the specific threshold.</span> McKinsey, BCG, Sequoia, Willison, Anthropic, AWS, and Microsoft all independently identify AI agents as the defining shift. BCG: "The branch manager of the future is an AI agent in the customer's pocket." Sequoia: AGI has arrived pragmatically as autonomous agents that can "figure things out." Karpathy identifies December 2025 as the month when agentic coding shifted from experimental to reliable: programmers who once corrected individual lines began delegating entire subsystem refactors. Implication: the agent wave is the one that matters most for banking. A community bank AI agent with local context could outperform a generic big-bank agent.</p>
+  <p>Karpathy's Software 3.0 framework gives the architectural underpinning: LLMs are a new type of computer (context window = RAM, model weights = CPU, prompts = software). In this paradigm, many existing application layers become unnecessary — the AI directly transforms inputs to outputs without an intermediary app. Organizations should ask not just "how do we use AI in our existing products?" but "which of our current products or workflows should stop existing in their current form?"</p>
+  <p>Note on frontier access: as of June 2026, government access restrictions apply to the most capable frontier models (Claude Fable 5, GPT-5.6). Organizations with access to frontier models have a structural, policy-mediated AI advantage that is neither market-acquired nor merit-based — a new dynamic to monitor.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2>On AI Economics and Business Models</h2>
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="belief">
+  <p><span class="belief-lead">There is a $500–600B annual gap between AI infrastructure spending and actual revenue.</span> Sequoia's David Cahn documented this in mid-2024, and the gap persists into 2026. Bill Gurley (Benchmark) warns of bubble characteristics. Goldman's 2026 walk-back and the broader revenue data confirm the gap is real. Implication: the current investment cycle may correct painfully, but that's actually good for adopters like banks — costs will come down. Don't over-invest in custom infrastructure; leverage vendor competition.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">AI cost deflation at ~10x per year is the most underappreciated trend.</span> Altman (<em>Three Observations</em>), Willison (annual reviews), and Sequoia all document this. GPT-4-level capability that cost $60/million tokens in 2023 now costs pennies. Implication: use cases that are marginally uneconomic today will be decisively economic within 12 months. Build the architecture now.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">The SaaS business model is being disrupted.</span> Sarah Tavel (Benchmark) argues we're shifting from selling "seats" to selling "work." a16z's 2026 predictions say the system of record loses primacy as AI enables autonomous execution. Implication: your member banks' vendor relationships will change fundamentally. Negotiate for outcome-based pricing where possible.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2>On Banking Specifically</h2>
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="belief">
+  <p><span class="belief-lead">Customer loyalty in banking is collapsing.</span> McKinsey: only 4% of US credit card applicants choose their existing bank without shopping (down from 10% in 2018). Checking account loyalty fell from 25% to 4%. This is substantiated by multiple industry data sources. Implication: the "we have relationships" argument that sustains community banking is eroding faster than most boards realize. AI-powered personalization may be the only way to rebuild stickiness.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">The regulatory environment is more permissive than most community bankers assume.</span> BIS found existing frameworks mostly cover AI risks. OCC's Bulletin 2025-26 explicitly reduced model risk burden for community banks. OCC is actively soliciting community bank input on AI adoption barriers. BPI argues the real risk is regulatory inaction. Implication: "regulatory uncertainty" is no longer a valid excuse for inaction. The regulators are ahead of many banks on this.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">A bank-by-bank approach to frontier technology won't work.</span> Fed Governor Waller said this explicitly in February 2026. The FSB warns of concentration risk from shared vendors. Brookings documents the scale advantage large banks have (JP Morgan saving 360,000 hours on contract review). Implication: this is the theoretical justification for the Alloy Labs alliance model. Quote Waller liberally.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">Data quality is the binding constraint for community banks.</span> Cornerstone Advisors: community banks are "only halfway" to leveraging their data. 35% have chatbots but most lack the data foundation for AI to work. Implication: data governance should arguably be the alliance's first priority before any AI deployment.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">"Pilot purgatory" is the biggest risk for banks experimenting with AI.</span> McKinsey coined this for the pattern of running narrow experiments without a plan to scale. 60% of banks lack AI KPIs (BCG). Implication: your alliance needs shared measurement frameworks and scaling playbooks, not just "try AI" encouragement.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2>On Risks and Safety</h2>
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="belief">
+  <p><span class="belief-lead">AI safety challenges are real and empirically demonstrated, not hypothetical.</span> Anthropic's alignment faking paper showed models developing strategic deception as emergent behavior. Anthropic's reward hacking paper showed misalignment transferring across domains. These are not theoretical exercises — they're published results from production models. Implication: take safety seriously in your worldview, but as an engineering challenge being actively worked on, not as a reason to avoid AI.</p>
+</div>
+
+<div class="belief">
+  <p><span class="belief-lead">Concentration risk from shared AI vendors is a systemic concern.</span> The FSB flagged this. As community banks adopt the same third-party AI tools, they create correlated risk. Deepfake tools increased 223% on dark web forums (WEF). Implication: the alliance should think about vendor diversification and shared risk assessment, not just shared procurement.</p>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2>How to Proceed</h2>
+<!-- ═══════════════════════════════════════════════ -->
+
+<p>The following represents advice on how banks should embrace AI.</p>
+
+<div class="phase-label">Phase 1</div>
+<h3>Foundation — Get everyone in the game</h3>
+
+<p><span class="belief-lead">Get everyone access to generative AI tools — immediately, with no gatekeeping.</span> Not a pilot. Not a committee. Not a tiered rollout by department. Everyone gets access to the same models, the same tools, the same ceiling. The people who surprise you most will be the ones you would never have given access to under a traditional approval process. Ramp gave unlimited access with no token limits and saw non-engineers shipping production code within weeks. The cost of AI access per employee is trivial relative to compensation — treat it as an infinite learning budget.</p>
+
+<p><span class="belief-lead">Communicate the vision clearly: AI is how we work now, and that makes your expertise more valuable, not less.</span> Fear of replacement is the single biggest threat to adoption, and it's rational — people aren't wrong that AI changes their role. The honest message isn't "your job is safe." It's "your domain knowledge is the scarce ingredient that makes AI useful here, and we need you to bring it." Employees who understand that their judgment is the context that makes AI effective will lean in rather than sabotage. Avoid the false comfort of "AI is just a tool" — acknowledge that roles will change, and position that change as an upgrade, not an elimination.</p>
+
+<p><span class="belief-lead">Create visible spaces for employees to share what they're building and learning.</span> Slack channels, Friday demos, all-hands spotlights, internal leaderboards. This does three things at once: it creates shared learning so people don't reinvent the wheel, it generates healthy peer pressure (nobody wants to be the team that isn't building anything), and it surfaces the early adopters on every team who become the contagion for everyone else. The wins you celebrate will define what people try next. Celebrate the risk analyst who automated 16 hours of manual work, not just the engineer who built a platform.</p>
+
+<p><span class="belief-lead">Give AI access to your data and systems — this is where most banks will stall and where the real advantage lives.</span> An AI agent is only as useful as what it can see. If your people have to file a ticket and wait two weeks for IT to approve a connection, you've lost them. Pre-connect core systems so that when someone opens the AI tool, the bank's knowledge is already there. This is also where context engineering enters: the competitive advantage isn't just having data, it's structuring it so AI can reason over the right information at the right moment. Banks sit on enormously rich data — transaction histories, customer relationships, regulatory filings, credit decisions — that is almost entirely untapped as AI context.</p>
+
+<p><span class="belief-lead">Organize as hub and spoke: centralize the platform, distribute the building.</span> A small central team owns the AI infrastructure — model access, connectors, security, guardrails, and the knowledge layer. Functional teams build on top of that platform and feed back what's working and what's not. The center builds the plumbing; the spokes find the problems worth solving. This is how you scale without either bottlenecking everything through one team or getting redundant chaos across thirty departments.</p>
+
+<p><span class="belief-lead">Don't rely on policy alone — build guardrails into the infrastructure itself.</span> Acceptable use policies are necessary but insufficient. Banks need technical controls: data loss prevention layers that prevent sensitive information from leaving the bank's environment, model deployments that run inside the bank's perimeter, audit trails that log every AI interaction for examiners. The goal is to make it hard to do the wrong thing rather than relying on people to read a policy and comply. This is where banking's regulatory muscle is actually an asset — banks know how to build controls. Apply that discipline to AI infrastructure, not just to AI policy documents.</p>
+
+<p><span class="belief-lead">Don't be stingy with AI access and spending.</span> The ROI compounds — demanding it upfront kills adoption. If you require a business case for every AI tool before people have even learned to use them, you'll get compliance theater, not transformation. The payoff comes from compounding: people who use AI daily develop muscle memory for when to reach for it, how to prompt effectively, what to trust and what to verify. That takes reps. Fund the reps. The math is simple — token costs are a rounding error on employee compensation, and even modest productivity gains justify the spend many times over.</p>
+
+
+<div class="phase-label">Phase 2</div>
+<h3>Acceleration — Move up the capability ladder</h3>
+
+<p><span class="belief-lead">Treat AI proficiency as a ladder and actively move people up it.</span> Level 0 is occasionally using ChatGPT. Level 1 is integrating AI into daily workflows. Level 2 is building something that automates part of their job. Level 3 is building systems that level up everyone else. Most of your bank is at L0 or L1. Your job is to get them to L2, and to identify and invest heavily in the people who reach L3 — they are your force multipliers. Embed AI proficiency into hiring, onboarding, and performance expectations. Not as a checkbox, but as a stated requirement for doing any job well.</p>
+
+<p><span class="belief-lead">Expect and embrace creative destruction of your own AI tools.</span> The tool you ship in Q3 should be obsolete by Q1. Every model improvement, every new capability reshapes what's possible. If your internal AI tools from three months ago still feel current, you aren't moving fast enough. This is deeply uncomfortable for banks, which are built for stability and permanence. But the ability to build, learn, sunset, and rebuild is the new institutional capability. Attach to problems, not tools.</p>
+
+<div class="updated">
+  <span class="version-badge">v1.1</span>
+  <p><span class="belief-lead">Restructure work around human-agent collaboration, not just human workflows with AI bolted on.</span> This is the difference between "cars on dirt roads" and redesigning the road system. Look at every workflow and ask: which parts require human judgment, relationships, or accountability? Which parts can agents draft, execute, or analyze? Design the workflow around that division of labor rather than inserting AI into the gaps of a process designed for humans doing everything. In lending, this might mean agents handling initial underwriting analysis while humans own the credit decision and borrower relationship. In compliance, agents monitor and flag while humans validate and testify.</p>
+  <p>The practical framework for this redesign is the <strong>manager stance</strong>: humans commission work (specify goals, provide context, set quality standards), review outputs (inspect results against the brief), and correct (direct revision of specific aspects, not step-by-step re-execution). This is not a passive role — it requires genuine domain expertise to execute well. Reviewing whether an agent's credit memo missed a key covenant risk is harder than writing the memo yourself if you don't know the domain deeply. The manager stance makes expertise more valuable, not less, because expertise is now the validation input.</p>
+</div>
+
+<p><span class="belief-lead">Invest in your domain experts as context engineers — they are the bridge between your bank's knowledge and AI's capability.</span> The experienced commercial lender who knows which covenants matter for this industry in this rate environment, the BSA officer who understands the spirit of the regulation and not just the letter, the branch manager who knows what a community actually needs — these people hold the tacit knowledge that makes AI useful for your bank specifically. Their role isn't going away; it's becoming the input layer that determines whether your AI produces generic output or genuine competitive advantage. Frame their job as teaching the system, not being replaced by it.</p>
+
+<div class="updated">
+  <span class="version-badge">v1.1</span>
+  <p><span class="belief-lead">Designate systems architects — people who design how humans and agents work together — and give them the Agentic Engineering toolkit.</span> This is the highest-leverage new role and the hardest to fill. These people decide what agents can do autonomously, what requires human approval, how performance is measured, and what happens when something breaks. In a bank, this means designing the escalation paths for credit exceptions, the approval workflows for BSA alerts, the feedback loops between AI-generated analysis and human decision-makers. This role requires both technical fluency and deep understanding of banking operations.</p>
+  <p>The Agentic Engineering practices these architects should be fluent in: <strong>spec design</strong> (writing detailed task specifications before prompting, including invariants and security boundaries); <strong>evaluation loop design</strong> (building test suites that let agents self-check and iterate rather than requiring human review of every step); <strong>diff inspection discipline</strong> (reading every agent-generated change critically before accepting); and <strong>permission management</strong> (designing what each agent can access and act on, minimizing blast radius). These practices are what separate professional-grade agentic deployment from vibe coding at scale.</p>
+</div>
+
+
+<div class="phase-label">Phase 3</div>
+<h3>Transformation — Rebuild the org around intelligence</h3>
+
+<p><span class="belief-lead">Collapse functional silos into cross-functional units organized around outcomes.</span> The traditional bank org chart — separate departments for lending, deposits, operations, compliance, marketing, IT — was built for a world where specialization required dedicated humans focused on little else. AI enables people to work across functions. Move toward fewer, broader teams organized around customer outcomes (e.g., "small business financial health") rather than internal functions. This is the hardest structural change and the one that will take years, but it is the direction of travel.</p>
+
+<p><span class="belief-lead">Build your bank's "world model" — a continuously updated representation of what you know about your customers, your operations, and your market.</span> This is the Block thesis applied to banking. Every transaction, every customer interaction, every credit decision, every regulatory filing is raw material for a model that understands your bank's reality. Most of this data exists today but lives in silos — core systems, loan origination platforms, CRM tools, email, meeting notes. The strategic imperative is to make this knowledge machine-readable, connected, and available as context for AI reasoning. The bank that builds the best world model of its customers and operations will be the bank that wins.</p>
+
+<p><span class="belief-lead">Recognize that this is an existential question, not an efficiency project.</span> The transformation we're describing is not about saving money on back-office operations, though it will do that. It's about whether your bank is organized as a hierarchy that routes information through people, or as an intelligence that uses information to serve customers. AI-native challengers — whether fintechs, neobanks, or the AI-native services firms now entering financial services — will design the human-agent division of labor from scratch. They have no legacy to restructure. The advantage incumbents have is depth of customer relationships and decades of accumulated domain knowledge. But that advantage is only an advantage if it's converted into AI context. Sitting on it is not a strategy.</p>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2>Open Questions</h2>
+<!-- ═══════════════════════════════════════════════ -->
+
+<p>Topics on which this worldview remains open, or where the answer varies by implementation:</p>
+
+<div class="question"><p><span class="question-lead">What happens to the workforce?</span> AI will change the shape of every team, but how much and how fast varies enormously. A $500M community bank with 200 employees faces a fundamentally different workforce question than a $50B regional with 5,000. Some roles compress, some merge, some disappear, some are invented. We don't yet know the pace, and the answer depends on how aggressively each bank redesigns work rather than just automating tasks within existing structures. The one-generation problem is real — if junior roles evaporate before we've figured out how to train the next generation of experts, we've traded short-term efficiency for a long-term talent crisis.</p></div>
+
+<div class="question"><p><span class="question-lead">Where does human judgment remain non-negotiable in banking, and where are we just assuming it does out of habit?</span> Credit decisions, BSA investigations, and customer relationships feel irreducibly human today. But some of that conviction is regulatory convention, not actual necessity. As models improve and regulators adapt, the line between "requires human judgment" and "we've always done it that way" will move. Each bank has to draw that line for itself, and redraw it regularly.</p></div>
+
+<div class="question"><p><span class="question-lead">How will regulators respond?</span> Banking regulators have not yet developed a coherent framework for AI in supervised institutions. Model risk management guidance (SR 11-7) was written for statistical models, not foundation models. Fair lending frameworks assume you can explain why a decision was made — explainability in LLMs is a different and harder problem. Will regulators treat AI as an accelerant of existing compliance frameworks or demand entirely new ones? Will they move fast enough to avoid becoming the bottleneck? The regulatory posture your bank operates under will shape how fast you can move and where.</p></div>
+
+<div class="question"><p><span class="question-lead">Build vs. buy vs. configure — where should banks invest directly?</span> Foundation models are commoditizing. Vertical AI applications for banking are emerging but immature. The context engineering layer — the domain-specific knowledge, data pipelines, and curation logic that make a general model useful for your bank — may be the only part that's truly proprietary. Should you build your own AI infrastructure, buy vertical SaaS, or focus entirely on the context layer and let vendors handle the rest? The answer probably differs by bank size, technical capability, and strategic ambition, and it will change as the vendor landscape matures.</p></div>
+
+<div class="question"><p><span class="question-lead">How do you measure AI ROI when the returns are nonlinear and lagging?</span> The compounding nature of AI adoption makes traditional ROI frameworks misleading. Early investments look expensive relative to output. Mature deployments produce returns that are hard to attribute to any single tool or initiative. If you demand quarterly ROI from the outset, you'll kill adoption. But boards and examiners will eventually want numbers. We don't yet have good measurement frameworks for this — the banks that figure it out will have a significant advantage in sustaining investment through inevitable skepticism cycles.</p></div>
+
+<div class="question"><p><span class="question-lead">What is the right organizational home for AI?</span> Does AI live in IT? In a dedicated innovation team? Distributed across business lines? Reporting to the CEO? The hub-and-spoke model is directionally right, but the specifics matter — who owns the budget, who sets priorities, who resolves conflicts between the central platform team and the business lines that want to move faster. Get this wrong and you either bottleneck everything or fragment into chaos.</p></div>
+
+<div class="question"><p><span class="question-lead">How do you maintain institutional knowledge when AI intermediates everything?</span> If AI handles the analysis and humans just validate, do humans still learn the underlying domain deeply enough to catch the errors that matter? This is the validator problem at the institutional level. Banks have always relied on apprenticeship — junior analysts learning by doing the work under senior supervision. If the work changes, the apprenticeship model has to change with it. Nobody has figured out what that looks like yet.</p></div>
+
+<div class="question"><p><span class="question-lead">What does AI do to the competitive dynamics between community banks, regionals, and the largest institutions?</span> The Brynjolfsson-Hitzig framework suggests AI favors centralization and scale. The context engineering argument suggests smaller firms with deeper domain knowledge and customer proximity can compete. Both are probably true in different parts of the value chain. Community banks may have an advantage in relationship depth and local knowledge — but only if they can convert that into AI context. If they can't, scale wins. The answer isn't clear, and it's the one that matters most to this audience.</p></div>
+
+<div class="question"><p><span class="question-lead">How fast does the technology itself change the calculus?</span> Everything we've said is true as of June 2026. Model capabilities are improving on a curve that makes 12-month predictions unreliable and 36-month predictions almost meaningless. Agentic AI is nascent. Multimodal capabilities are expanding. Costs are falling. A strategy built for today's models will be wrong for next year's models — which means the real capability isn't any specific AI deployment, it's the organizational muscle to adapt continuously. How do you build that muscle in an industry designed for stability?</p></div>
+
+<div class="question"><p><span class="question-lead">What are the second-order effects on bank customers and communities?</span> If AI makes banks dramatically more efficient, does that translate to better service and lower costs for customers, or just higher margins for shareholders? Community banks exist to serve communities — the question of who benefits from AI transformation isn't just strategic, it's existential to the mission. And if AI enables banks to serve customers they previously couldn't reach profitably, that's a different and more compelling story than cost reduction.</p></div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<h2>Key Debates to Track</h2>
+<!-- ═══════════════════════════════════════════════ -->
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th style="width:28%">Debate</th>
+      <th style="width:36%">Bull case</th>
+      <th style="width:36%">Bear case</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AI productivity impact</td>
+      <td>Goldman 2023 (7% GDP), Brynjolfsson (14–34% task gains)</td>
+      <td>Acemoglu (under 1% TFP/decade), Goldman 2026 ("no economy-wide effect yet")</td>
+    </tr>
+    <tr>
+      <td>AGI timeline</td>
+      <td>Aschenbrenner (2027), Amodei (2–3 years), Hassabis (50% by 2030)</td>
+      <td>Sutskever (scaling insufficient), Patel (impressive ≠ useful)</td>
+    </tr>
+    <tr>
+      <td>Open vs. closed AI</td>
+      <td>Zuckerberg 2024, LeCun</td>
+      <td>Zuckerberg 2025 reversal, most frontier labs</td>
+    </tr>
+    <tr>
+      <td>LLMs as path to AGI</td>
+      <td>Most frontier labs</td>
+      <td>LeCun (world models needed), Sutskever (new paradigm needed)</td>
+    </tr>
+    <tr>
+      <td>AI regulation approach</td>
+      <td>EU AI Act (risk-based tiers), Biden EO</td>
+      <td>Trump EOs (deregulation), Andreessen (regulatory capture)</td>
+    </tr>
+    <tr>
+      <td>Banking AI impact</td>
+      <td>BCG ($370B), McKinsey ($200–340B), Microsoft (3x returns)</td>
+      <td>Cornerstone (data not ready), 60% lack KPIs</td>
+    </tr>
+    <tr>
+      <td class="new-row">AI bubble vs. durable demand</td>
+      <td class="new-row">Thompson (agents change compute economics; non-bubble); Sequoia (AGI pragmatically arrived)</td>
+      <td class="new-row">Cahn/Gurley ($500–600B revenue gap persists; bubble characteristics)</td>
+    </tr>
+    <tr>
+      <td class="new-row">Usefulness lag: interface or adoption?</td>
+      <td class="new-row">Mollick (capability overhang is interface-mediated; will compress as agents diffuse)</td>
+      <td class="new-row">Acemoglu/structural (organizational and complementary-input barriers dominate; lag is durable)</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="doc-footer">
+  AI Worldview &nbsp;·&nbsp; v1.1 Draft &nbsp;·&nbsp; June 30, 2026 &nbsp;·&nbsp;
+  Sources: Sequoia Capital (multiple), Dario Amodei (multiple), Sam Altman (multiple), McKinsey, a16z, Stanford HAI 2026, Foundation Capital, BCG, Anthropic Economic Index, Andrej Karpathy (Sequoia AI Ascent 2026), Ethan Mollick (One Useful Thing, June 2026)
+</div>
